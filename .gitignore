@@ -1,9 +1,5 @@
-**/bin/
-**/obj/
-*.user
-*.suo
-.vs/
-**/appsettings.Production.json
-**/appsettings.Local.json
-uploads/
-CmsUploads/
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
