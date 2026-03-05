@@ -1,0 +1,54 @@
+info:
+  name: Resolve complaint
+  type: http
+  seq: 9
+  tags:
+    - Complaints
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/complaints/:id/resolve"
+  params:
+    - name: id
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "resolutionSummary": "",
+        "rootCause": "",
+        "fixApplied": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Resolved
+    request:
+      url: "{{baseUrl}}/api/v1/complaints/:id/resolve"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "resolutionSummary": "",
+            "rootCause": "",
+            "fixApplied": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""

@@ -4,6 +4,7 @@ using Cd.Cms.Application.DTOs.Users;
 using Cd.Cms.Domain;
 using Cd.Cms.Shared;
 using Microsoft.AspNetCore.Identity;
+using System.Text.RegularExpressions;
 
 namespace Cd.Cms.Application.Services
 {
@@ -24,6 +25,7 @@ namespace Cd.Cms.Application.Services
             if (string.IsNullOrWhiteSpace(request.Email)) throw new ArgumentException("Email is required.");
             if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 8)
                 throw new ArgumentException("Password must be at least 8 characters.");
+            EnsurePasswordComplexity(request.Password);
 
             // Hash password before storing
             var tempUser = new User();
@@ -40,10 +42,21 @@ namespace Cd.Cms.Application.Services
                 throw new ArgumentException("Passwords do not match.");
             if (request.NewPassword.Length < 8)
                 throw new ArgumentException("Password must be at least 8 characters.");
+            EnsurePasswordComplexity(request.NewPassword);
 
             var tempUser = new User();
             var hash = _hasher.HashPassword(tempUser, request.NewPassword);
             return _repo.ChangePasswordAsync(id, hash, actorUserId);
+        }
+
+        private static void EnsurePasswordComplexity(string password)
+        {
+            if (!Regex.IsMatch(password, "[A-Z]") ||
+                !Regex.IsMatch(password, "[a-z]") ||
+                !Regex.IsMatch(password, "[0-9]"))
+            {
+                throw new ArgumentException("Password must include uppercase, lowercase, and number.");
+            }
         }
     }
 }

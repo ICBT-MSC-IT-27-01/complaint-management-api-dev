@@ -7,5 +7,11 @@ namespace Cd.Cms.Application.Contracts.Services
         Task<AuthResponseDto> LoginAsync(LoginRequestDto request, CancellationToken ct = default);
         Task<ClientEmailCheckResponseDto> CheckClientEmailAsync(string email, CancellationToken ct = default);
         Task<AuthResponseDto> RegisterClientAsync(ClientRegisterRequestDto request, CancellationToken ct = default);
+        Task<ForgotPasswordResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request, CancellationToken ct = default);
+        Task ResetPasswordAsync(ResetPasswordRequestDto request, CancellationToken ct = default);
+        Task<TwoFactorSetupResponseDto> BeginTwoFactorSetupAsync(long userId, CancellationToken ct = default);
+        Task EnableTwoFactorAsync(long userId, EnableTwoFactorRequestDto request, CancellationToken ct = default);
+        Task<List<UserSessionDto>> GetSessionsAsync(long userId, CancellationToken ct = default);
+        Task RevokeSessionAsync(long userId, string sessionId, CancellationToken ct = default);
     }
 }

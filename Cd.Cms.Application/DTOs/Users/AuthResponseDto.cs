@@ -9,5 +9,7 @@ namespace Cd.Cms.Application.DTOs.Users
         public string Role { get; set; } = string.Empty;
         public string AccessToken { get; set; } = string.Empty;
         public DateTime ExpiresAtUtc { get; set; }
+        public string SessionId { get; set; } = string.Empty;
+        public bool TwoFactorEnabled { get; set; }
     }
 }

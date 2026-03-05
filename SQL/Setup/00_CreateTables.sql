@@ -12,6 +12,8 @@ CREATE TABLE Users (
     PhoneNumber       NVARCHAR(20)  NULL,
     PasswordHash      NVARCHAR(500) NOT NULL,
     Role              NVARCHAR(50)  NOT NULL DEFAULT 'Agent',
+    Department        NVARCHAR(100) NULL,
+    ReportingManagerId BIGINT       NULL REFERENCES Users(Id),
     IsActive          BIT           NOT NULL DEFAULT 1,
     IsLocked          BIT           NOT NULL DEFAULT 0,
     CreatedDateTime   DATETIME2     NOT NULL DEFAULT GETUTCDATE(),

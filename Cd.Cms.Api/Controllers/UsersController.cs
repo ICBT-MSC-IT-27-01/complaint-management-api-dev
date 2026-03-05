@@ -4,6 +4,7 @@ using Cd.Cms.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
 
 namespace Cd.Cms.Api.Controllers
 {
@@ -79,10 +80,33 @@ namespace Cd.Cms.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
-            try { await _users.DeleteAsync(id, GetActorUserId()); return Ok(ApiResponse<object>.Success("User deleted.")); }
+            try
+            {
+                if (id == GetActorUserId())
+                    return BadRequest(ApiResponse<object>.ValidationError("You cannot delete your own account."));
+
+                await _users.DeleteAsync(id, GetActorUserId());
+                return Ok(ApiResponse<object>.Success("User deleted."));
+            }
             catch (Exception ex) { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
         }
 
+        [HttpGet("export/csv")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportCsv([FromQuery] UserSearchRequest req)
+        {
+            var data = await _users.SearchAsync(req ?? new());
+            var sb = new StringBuilder();
+            sb.AppendLine("Id,Name,Email,Username,Role,Department,IsActive,LastLoginDateTime");
+            foreach (var u in data.Items)
+            {
+                sb.AppendLine($"{u.Id},\"{Escape(u.Name)}\",{u.Email},{u.Username},{u.Role},\"{Escape(u.Department)}\",{u.IsActive},{u.LastLoginDateTime:O}");
+            }
+
+            return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", $"users-{DateTime.UtcNow:yyyyMMddHHmmss}.csv");
+        }
+
         private long GetActorUserId() => long.Parse(User.FindFirst("uid")?.Value ?? "0");
+        private static string Escape(string value) => value.Replace("\"", "\"\"");
     }
 }

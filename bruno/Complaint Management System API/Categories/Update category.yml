@@ -1,0 +1,54 @@
+info:
+  name: Update category
+  type: http
+  seq: 4
+  tags:
+    - Categories
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/v1/categories/:id"
+  params:
+    - name: id
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "name": "",
+        "parentCategoryId": 0,
+        "sortOrder": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Updated
+    request:
+      url: "{{baseUrl}}/api/v1/categories/:id"
+      method: PUT
+      params:
+        - name: id
+          value: ""
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "parentCategoryId": 0,
+            "sortOrder": 0
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""

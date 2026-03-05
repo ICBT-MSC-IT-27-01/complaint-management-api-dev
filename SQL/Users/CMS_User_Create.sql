@@ -5,12 +5,14 @@ CREATE OR ALTER PROCEDURE CMS_User_Create
     @PhoneNumber NVARCHAR(20)  = NULL,
     @PasswordHash NVARCHAR(500),
     @Role        NVARCHAR(50)  = 'Agent',
+    @Department  NVARCHAR(100) = NULL,
+    @ReportingManagerId BIGINT = NULL,
     @ActorUserId BIGINT
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Users (Name, Email, Username, PhoneNumber, PasswordHash, Role, CreatedBy)
-    VALUES (@Name, @Email, @Username, @PhoneNumber, @PasswordHash, @Role, @ActorUserId);
+    INSERT INTO Users (Name, Email, Username, PhoneNumber, PasswordHash, Role, Department, ReportingManagerId, CreatedBy)
+    VALUES (@Name, @Email, @Username, @PhoneNumber, @PasswordHash, @Role, @Department, @ReportingManagerId, @ActorUserId);
 
     DECLARE @NewId BIGINT = SCOPE_IDENTITY();
     EXEC CMS_User_GetById @NewId;

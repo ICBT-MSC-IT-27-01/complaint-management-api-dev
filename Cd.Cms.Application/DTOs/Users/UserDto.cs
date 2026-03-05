@@ -10,6 +10,9 @@ namespace Cd.Cms.Application.DTOs.Users
         public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool IsLocked { get; set; }
+        public string Department { get; set; } = string.Empty;
+        public long? ReportingManagerId { get; set; }
+        public string ReportingManagerName { get; set; } = string.Empty;
         public DateTime CreatedDateTime { get; set; }
         public DateTime? LastLoginDateTime { get; set; }
     }

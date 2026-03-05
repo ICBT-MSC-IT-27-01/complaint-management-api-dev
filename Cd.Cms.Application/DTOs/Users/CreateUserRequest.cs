@@ -8,5 +8,7 @@ namespace Cd.Cms.Application.DTOs.Users
         public string PhoneNumber { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Role { get; set; } = "Agent";
+        public string? Department { get; set; }
+        public long? ReportingManagerId { get; set; }
     }
 }

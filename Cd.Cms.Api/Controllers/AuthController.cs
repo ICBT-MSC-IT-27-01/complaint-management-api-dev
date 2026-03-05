@@ -47,5 +47,32 @@ namespace Cd.Cms.Api.Controllers
             catch (InvalidOperationException ex)   { return BadRequest(ApiResponse<object>.Error(ex.Message, ResponseCodes.BAD_REQUEST)); }
             catch (Exception ex)                   { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto dto, CancellationToken ct)
+        {
+            try
+            {
+                if (dto == null) return BadRequest(ApiResponse<object>.ValidationError("Request body is required."));
+                var result = await _auth.ForgotPasswordAsync(dto, ct);
+                return Ok(ApiResponse<object>.Success("Forgot password request accepted.", result));
+            }
+            catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
+            catch (Exception ex)         { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto, CancellationToken ct)
+        {
+            try
+            {
+                if (dto == null) return BadRequest(ApiResponse<object>.ValidationError("Request body is required."));
+                await _auth.ResetPasswordAsync(dto, ct);
+                return Ok(ApiResponse<object>.Success("Password reset completed."));
+            }
+            catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
+            catch (InvalidOperationException ex) { return BadRequest(ApiResponse<object>.Error(ex.Message, ResponseCodes.BAD_REQUEST)); }
+            catch (Exception ex)         { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
+        }
     }
 }

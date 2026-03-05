@@ -48,6 +48,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Users
             using var cmd = new SqlCommand(UserSpNames.Search, conn) { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("@Keyword",  (object?)request.Keyword  ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Role",     (object?)request.Role     ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Department",(object?)request.Department ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@IsActive", (object?)request.IsActive ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Page",     request.Page);
             cmd.Parameters.AddWithValue("@PageSize", request.PageSize);
@@ -70,6 +71,8 @@ namespace Cd.Cms.Infrastructure.Repositories.Users
             cmd.Parameters.AddWithValue("@PhoneNumber",  (object?)req.PhoneNumber ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@PasswordHash", req.Password);
             cmd.Parameters.AddWithValue("@Role",         req.Role);
+            cmd.Parameters.AddWithValue("@Department",   (object?)req.Department ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@ReportingManagerId", (object?)req.ReportingManagerId ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@ActorUserId",  actorUserId);
             await conn.OpenAsync();
             using var r = await cmd.ExecuteReaderAsync();
@@ -87,6 +90,8 @@ namespace Cd.Cms.Infrastructure.Repositories.Users
             cmd.Parameters.AddWithValue("@Username",    req.Username);
             cmd.Parameters.AddWithValue("@PhoneNumber", (object?)req.PhoneNumber ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Role",        req.Role);
+            cmd.Parameters.AddWithValue("@Department",   (object?)req.Department ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@ReportingManagerId", (object?)req.ReportingManagerId ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@ActorUserId", actorUserId);
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
@@ -134,6 +139,9 @@ namespace Cd.Cms.Infrastructure.Repositories.Users
             Role             = DataReader.GetString(r, "Role"),
             IsActive         = DataReader.GetBool(r, "IsActive"),
             IsLocked         = DataReader.GetBool(r, "IsLocked"),
+            Department       = DataReader.GetString(r, "Department"),
+            ReportingManagerId = DataReader.GetNullableLong(r, "ReportingManagerId"),
+            ReportingManagerName = DataReader.GetString(r, "ReportingManagerName"),
             CreatedDateTime  = DataReader.GetDate(r, "CreatedDateTime"),
             LastLoginDateTime = DataReader.GetNullableDate(r, "LastLoginDateTime"),
         };

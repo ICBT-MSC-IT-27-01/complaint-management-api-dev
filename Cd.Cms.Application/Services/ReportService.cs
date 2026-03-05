@@ -9,7 +9,7 @@ namespace Cd.Cms.Application.Services
         private readonly IReportRepository _repo;
         public ReportService(IReportRepository repo) => _repo = repo;
 
-        public Task<DashboardDto> GetDashboardAsync(long actorUserId, string role) => _repo.GetDashboardAsync(actorUserId, role);
+        public Task<DashboardDto> GetDashboardAsync(long actorUserId, string role, DashboardRequest request) => _repo.GetDashboardAsync(actorUserId, role, request);
         public Task<ComplaintSummaryDto> GetComplaintSummaryAsync(ReportFilterRequest request) => _repo.GetComplaintSummaryAsync(request);
     }
 }

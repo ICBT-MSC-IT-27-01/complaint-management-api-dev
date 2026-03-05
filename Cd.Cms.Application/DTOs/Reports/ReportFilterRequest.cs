@@ -6,5 +6,6 @@ namespace Cd.Cms.Application.DTOs.Reports
         public DateTime? To { get; set; }
         public long? AgentUserId { get; set; }
         public long? CategoryId { get; set; }
+        public string? Department { get; set; }
     }
 }

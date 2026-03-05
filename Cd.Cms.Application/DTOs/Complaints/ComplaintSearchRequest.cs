@@ -5,6 +5,7 @@ namespace Cd.Cms.Application.DTOs.Complaints
         public long? StatusId { get; set; }
         public long? CategoryId { get; set; }
         public long? ChannelId { get; set; }
+        public string? Department { get; set; }
         public string? Priority { get; set; }
         public long? AssignedToUserId { get; set; }
         public string? Q { get; set; }

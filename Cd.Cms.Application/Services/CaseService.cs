@@ -15,6 +15,15 @@ namespace Cd.Cms.Application.Services
         public Task AddActivityAsync(long caseId, AddCaseActivityRequest request, long actorUserId)
         {
             if (string.IsNullOrWhiteSpace(request.Description)) throw new ArgumentException("Description is required.");
+            if (!string.Equals(request.Visibility, "Public", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(request.Visibility, "Private", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Visibility must be Public or Private.");
+            }
+
+            var visibility = string.Equals(request.Visibility, "Public", StringComparison.OrdinalIgnoreCase) ? "Public" : "Private";
+            var notify = request.NotifyClient ? "NotifyClient" : "NoNotify";
+            request.Description = $"[{visibility}|{notify}] {request.Description.Trim()}";
             return _repo.AddActivityAsync(caseId, request, actorUserId);
         }
         public Task UpdateStatusAsync(long caseId, UpdateCaseStatusRequest request, long actorUserId)

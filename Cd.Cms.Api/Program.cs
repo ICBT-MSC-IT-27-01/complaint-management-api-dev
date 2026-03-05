@@ -1,3 +1,4 @@
+using Cd.Cms.Api.Auditing;
 using Cd.Cms.Api.DependencyInjection;
 using Cd.Cms.Application.Common.Auth;
 using Cd.Cms.Application.Contracts.Repositories;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<ICategoryRepository,   CategoryRepository>();
 builder.Services.AddScoped<ISlaRepository,        SlaRepository>();
 builder.Services.AddScoped<IReportRepository,     ReportRepository>();
 builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+builder.Services.AddScoped<IAuditWriter, AuditWriter>();
 
 // ── Services ──────────────────────────────────────────────────────────────────
 builder.Services.AddScoped<IAuthService,       AuthService>();
@@ -72,6 +74,7 @@ app.UseCors("CmsPolicy");
 // ✅ CRITICAL: Authentication BEFORE Authorization
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.MapControllers();
 app.Run();

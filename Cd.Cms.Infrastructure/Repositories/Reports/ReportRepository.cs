@@ -12,12 +12,15 @@ namespace Cd.Cms.Infrastructure.Repositories.Reports
         private readonly IDbFactory _db;
         public ReportRepository(IDbFactory db) => _db = db;
 
-        public async Task<DashboardDto> GetDashboardAsync(long actorUserId, string role)
+        public async Task<DashboardDto> GetDashboardAsync(long actorUserId, string role, DashboardRequest request)
         {
             using var conn = (SqlConnection)_db.CreateConnection();
             using var cmd = new SqlCommand(ReportSpNames.GetDashboard, conn) { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("@ActorUserId", actorUserId);
             cmd.Parameters.AddWithValue("@Role",        role);
+            cmd.Parameters.AddWithValue("@Period",      request.Period);
+            cmd.Parameters.AddWithValue("@From",        (object?)request.From ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@To",          (object?)request.To ?? DBNull.Value);
             await conn.OpenAsync();
             using var r = await cmd.ExecuteReaderAsync();
             var dto = new DashboardDto();
@@ -29,6 +32,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Reports
                 dto.SlaBreached      = DataReader.GetInt(r, "SlaBreached");
                 dto.SlaAtRisk        = DataReader.GetInt(r, "SlaAtRisk");
                 dto.MyOpenComplaints = DataReader.GetInt(r, "MyOpenComplaints");
+                dto.AvgResolutionHours = DataReader.GetDecimal(r, "AvgResolutionHours") > 0 ? (double)DataReader.GetDecimal(r, "AvgResolutionHours") : 0d;
             }
             if (await r.NextResultAsync())
                 while (await r.ReadAsync())
@@ -36,6 +40,8 @@ namespace Cd.Cms.Infrastructure.Repositories.Reports
             if (await r.NextResultAsync())
                 while (await r.ReadAsync())
                     dto.ByPriority.Add(new PriorityCountDto { Priority = DataReader.GetString(r, "Priority"), Count = DataReader.GetInt(r, "Count") });
+
+            dto.SlaCompliancePercent = dto.TotalComplaints == 0 ? 0 : Math.Round(((dto.TotalComplaints - dto.SlaBreached) * 100.0) / dto.TotalComplaints, 2);
             return dto;
         }
 
@@ -47,6 +53,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Reports
             cmd.Parameters.AddWithValue("@To",           (object?)req.To           ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@AgentUserId",  (object?)req.AgentUserId  ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CategoryId",   (object?)req.CategoryId   ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Department",   (object?)req.Department   ?? DBNull.Value);
             await conn.OpenAsync();
             using var r = await cmd.ExecuteReaderAsync();
             var dto = new ComplaintSummaryDto();

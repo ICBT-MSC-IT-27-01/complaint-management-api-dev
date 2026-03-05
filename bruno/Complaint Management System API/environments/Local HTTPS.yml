@@ -1,0 +1,4 @@
+name: Local HTTPS
+variables:
+  - name: baseUrl
+    value: https://localhost:7000

@@ -1,0 +1,52 @@
+info:
+  name: Update complaint status
+  type: http
+  seq: 6
+  tags:
+    - Complaints
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/v1/complaints/:id/status"
+  params:
+    - name: id
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "statusId": 0,
+        "note": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Updated
+    request:
+      url: "{{baseUrl}}/api/v1/complaints/:id/status"
+      method: PATCH
+      params:
+        - name: id
+          value: ""
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "statusId": 0,
+            "note": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""

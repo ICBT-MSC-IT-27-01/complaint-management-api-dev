@@ -1,0 +1,783 @@
+openapi: 3.0.3
+info:
+  title: Complaint Management System API
+  version: "1.0.0"
+  description: Bruno-importable full API collection for complaint-management-api.
+servers:
+  - url: https://localhost:7000
+    description: Local HTTPS
+  - url: http://localhost:5000
+    description: Local HTTP
+security:
+  - bearerAuth: []
+tags:
+  - name: Health
+  - name: Auth
+  - name: Users
+  - name: Clients
+  - name: Categories
+  - name: Complaints
+  - name: Attachments
+  - name: Cases
+  - name: SLA Policies
+  - name: Reports
+paths:
+  /api/v1/health:
+    get:
+      tags: [Health]
+      security: []
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Healthy
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Login or client email check
+      description: If `password` is empty/blank, this checks whether a client email exists. Otherwise performs login.
+      operationId: authLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDto'
+            examples:
+              login:
+                value:
+                  emailOrUsername: admin@cms.local
+                  password: Admin@123
+              emailCheck:
+                value:
+                  emailOrUsername: client@cms.local
+                  password: ""
+      responses:
+        '200': { description: Success }
+        '400': { description: Bad request }
+        '401': { description: Unauthorized }
+
+  /api/v1/auth/client/register:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Register client account
+      operationId: registerClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRegisterRequestDto'
+      responses:
+        '201': { description: Created }
+        '400': { description: Bad request }
+
+  /api/v1/users:
+    get:
+      tags: [Users]
+      summary: Search users
+      operationId: searchUsers
+      parameters:
+        - $ref: '#/components/parameters/Keyword'
+        - $ref: '#/components/parameters/Role'
+        - $ref: '#/components/parameters/IsActive'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Users]
+      summary: Create user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201': { description: Created }
+
+  /api/v1/users/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by id
+      operationId: getUserById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    put:
+      tags: [Users]
+      summary: Update user
+      operationId: updateUser
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Users]
+      summary: Delete user
+      operationId: deleteUser
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/users/me:
+    get:
+      tags: [Users]
+      summary: Get current user profile
+      operationId: getMyProfile
+      responses:
+        '200': { description: OK }
+
+  /api/v1/users/agents:
+    get:
+      tags: [Users]
+      summary: Get agents list
+      operationId: getAgents
+      responses:
+        '200': { description: OK }
+
+  /api/v1/users/me/change-password:
+    put:
+      tags: [Users]
+      summary: Change current user password
+      operationId: changeMyPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200': { description: Password changed }
+
+  /api/v1/clients:
+    get:
+      tags: [Clients]
+      summary: Search clients
+      operationId: searchClients
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: clientType
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/IsActive'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Clients]
+      summary: Create client
+      operationId: createClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequest'
+      responses:
+        '201': { description: Created }
+
+  /api/v1/clients/{id}:
+    get:
+      tags: [Clients]
+      summary: Get client by id
+      operationId: getClientById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+    put:
+      tags: [Clients]
+      summary: Update client
+      operationId: updateClient
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequest'
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Clients]
+      summary: Delete client
+      operationId: deleteClient
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/clients/search:
+    get:
+      tags: [Clients]
+      summary: Client typeahead search
+      operationId: clientsTypeahead
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+
+  /api/v1/categories:
+    get:
+      tags: [Categories]
+      summary: Get all categories
+      operationId: getCategories
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Categories]
+      summary: Create category
+      operationId: createCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '201': { description: Created }
+
+  /api/v1/categories/{id}:
+    get:
+      tags: [Categories]
+      summary: Get category by id
+      operationId: getCategoryById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+    put:
+      tags: [Categories]
+      summary: Update category
+      operationId: updateCategory
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Categories]
+      summary: Deactivate category
+      operationId: deactivateCategory
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Deactivated }
+
+  /api/v1/complaints:
+    get:
+      tags: [Complaints]
+      summary: Search complaints
+      operationId: searchComplaints
+      parameters:
+        - name: statusId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: categoryId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: channelId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: priority
+          in: query
+          schema: { type: string }
+        - name: assignedToUserId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: from
+          in: query
+          schema: { type: string, format: date-time }
+        - name: to
+          in: query
+          schema: { type: string, format: date-time }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Complaints]
+      summary: Create complaint
+      operationId: createComplaint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComplaintRequest'
+      responses:
+        '201': { description: Created }
+
+  /api/v1/complaints/{id}:
+    get:
+      tags: [Complaints]
+      summary: Get complaint by id
+      operationId: getComplaintById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    delete:
+      tags: [Complaints]
+      summary: Delete complaint
+      operationId: deleteComplaint
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/complaints/{id}/history:
+    get:
+      tags: [Complaints]
+      summary: Get complaint history
+      operationId: getComplaintHistory
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+
+  /api/v1/complaints/{id}/status:
+    patch:
+      tags: [Complaints]
+      summary: Update complaint status
+      operationId: updateComplaintStatus
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComplaintStatusRequest'
+      responses:
+        '200': { description: Updated }
+
+  /api/v1/complaints/{id}/assign:
+    post:
+      tags: [Complaints]
+      summary: Assign complaint
+      operationId: assignComplaint
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignComplaintRequest'
+      responses:
+        '200': { description: Assigned }
+
+  /api/v1/complaints/{id}/escalate:
+    post:
+      tags: [Complaints]
+      summary: Escalate complaint
+      operationId: escalateComplaint
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EscalateComplaintRequest'
+      responses:
+        '200': { description: Escalated }
+
+  /api/v1/complaints/{id}/resolve:
+    post:
+      tags: [Complaints]
+      summary: Resolve complaint
+      operationId: resolveComplaint
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolveComplaintRequest'
+      responses:
+        '200': { description: Resolved }
+
+  /api/v1/complaints/{id}/close:
+    post:
+      tags: [Complaints]
+      summary: Close complaint
+      operationId: closeComplaint
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Closed }
+
+  /api/v1/complaints/{complaintId}/attachments:
+    get:
+      tags: [Attachments]
+      summary: Get complaint attachments
+      operationId: getAttachments
+      parameters:
+        - $ref: '#/components/parameters/ComplaintIdPath'
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Attachments]
+      summary: Upload attachment
+      operationId: uploadAttachment
+      parameters:
+        - $ref: '#/components/parameters/ComplaintIdPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required: [file]
+      responses:
+        '201': { description: Uploaded }
+
+  /api/v1/complaints/{complaintId}/attachments/{id}:
+    delete:
+      tags: [Attachments]
+      summary: Delete attachment
+      operationId: deleteAttachment
+      parameters:
+        - $ref: '#/components/parameters/ComplaintIdPath'
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/cases/{id}:
+    get:
+      tags: [Cases]
+      summary: Get case by id
+      operationId: getCaseById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+
+  /api/v1/cases/{id}/activities:
+    get:
+      tags: [Cases]
+      summary: Get case activities
+      operationId: getCaseActivities
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Cases]
+      summary: Add case activity
+      operationId: addCaseActivity
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCaseActivityRequest'
+      responses:
+        '200': { description: Created }
+
+  /api/v1/cases/{id}/status:
+    patch:
+      tags: [Cases]
+      summary: Update case status
+      operationId: updateCaseStatus
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCaseStatusRequest'
+      responses:
+        '200': { description: Updated }
+
+  /api/v1/sla-policies:
+    get:
+      tags: [SLA Policies]
+      summary: Get all SLA policies
+      operationId: getSlaPolicies
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [SLA Policies]
+      summary: Create SLA policy
+      operationId: createSlaPolicy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSlaPolicyRequest'
+      responses:
+        '201': { description: Created }
+
+  /api/v1/sla-policies/{id}:
+    get:
+      tags: [SLA Policies]
+      summary: Get SLA policy by id
+      operationId: getSlaPolicyById
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    put:
+      tags: [SLA Policies]
+      summary: Update SLA policy
+      operationId: updateSlaPolicy
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSlaPolicyRequest'
+      responses:
+        '200': { description: Updated }
+
+  /api/v1/reports/dashboard:
+    get:
+      tags: [Reports]
+      summary: Get dashboard data
+      operationId: getDashboard
+      responses:
+        '200': { description: OK }
+
+  /api/v1/reports/complaints-summary:
+    get:
+      tags: [Reports]
+      summary: Get complaints summary
+      operationId: getComplaintSummary
+      parameters:
+        - name: from
+          in: query
+          schema: { type: string, format: date-time }
+        - name: to
+          in: query
+          schema: { type: string, format: date-time }
+        - name: agentUserId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: categoryId
+          in: query
+          schema: { type: integer, format: int64 }
+      responses:
+        '200': { description: OK }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    ComplaintIdPath:
+      name: complaintId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    Keyword:
+      name: keyword
+      in: query
+      schema:
+        type: string
+    Role:
+      name: role
+      in: query
+      schema:
+        type: string
+    IsActive:
+      name: isActive
+      in: query
+      schema:
+        type: boolean
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+  schemas:
+    LoginRequestDto:
+      type: object
+      properties:
+        emailOrUsername:
+          type: string
+        password:
+          type: string
+      required: [emailOrUsername]
+    ClientRegisterRequestDto:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        phoneNumber: { type: string }
+        password: { type: string }
+        confirmPassword: { type: string }
+      required: [name, email, phoneNumber, password, confirmPassword]
+    CreateUserRequest:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        username: { type: string }
+        phoneNumber: { type: string }
+        password: { type: string }
+        role: { type: string, example: Agent }
+      required: [name, email, username, phoneNumber, password, role]
+    UpdateUserRequest:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        username: { type: string }
+        phoneNumber: { type: string }
+        role: { type: string }
+      required: [name, email, username, phoneNumber, role]
+    ChangePasswordRequest:
+      type: object
+      properties:
+        currentPassword: { type: string }
+        newPassword: { type: string }
+        confirmPassword: { type: string }
+      required: [currentPassword, newPassword, confirmPassword]
+    CreateClientRequest:
+      type: object
+      properties:
+        companyName: { type: string }
+        primaryEmail: { type: string, format: email }
+        primaryPhone: { type: string }
+        address: { type: string }
+        clientType: { type: string, example: Standard }
+        accountManagerId: { type: integer, format: int64, nullable: true }
+      required: [companyName, primaryEmail, clientType]
+    UpdateClientRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateClientRequest'
+    CreateCategoryRequest:
+      type: object
+      properties:
+        name: { type: string }
+        parentCategoryId: { type: integer, format: int64, nullable: true }
+        sortOrder: { type: integer, default: 0 }
+      required: [name]
+    CreateComplaintRequest:
+      type: object
+      properties:
+        clientId: { type: integer, format: int64, nullable: true }
+        clientName: { type: string, nullable: true }
+        clientEmail: { type: string, format: email, nullable: true }
+        clientMobile: { type: string, nullable: true }
+        complaintChannelId: { type: integer, format: int64 }
+        complaintCategoryId: { type: integer, format: int64 }
+        subCategoryId: { type: integer, format: int64, nullable: true }
+        subject: { type: string }
+        description: { type: string }
+        priority: { type: string, example: Medium }
+      required: [complaintChannelId, complaintCategoryId, subject, description, priority]
+    UpdateComplaintStatusRequest:
+      type: object
+      properties:
+        statusId: { type: integer, format: int64 }
+        note: { type: string, nullable: true }
+      required: [statusId]
+    AssignComplaintRequest:
+      type: object
+      properties:
+        assignedToUserId: { type: integer, format: int64 }
+        note: { type: string, nullable: true }
+        dueDate: { type: string, format: date-time, nullable: true }
+      required: [assignedToUserId]
+    EscalateComplaintRequest:
+      type: object
+      properties:
+        reason: { type: string }
+        escalatedToUserId: { type: integer, format: int64 }
+        escalationType: { type: string, example: Manual }
+      required: [reason, escalatedToUserId, escalationType]
+    ResolveComplaintRequest:
+      type: object
+      properties:
+        resolutionSummary: { type: string }
+        rootCause: { type: string, nullable: true }
+        fixApplied: { type: string, nullable: true }
+      required: [resolutionSummary]
+    AddCaseActivityRequest:
+      type: object
+      properties:
+        activityType: { type: string, example: Note }
+        description: { type: string }
+      required: [activityType, description]
+    UpdateCaseStatusRequest:
+      type: object
+      properties:
+        status: { type: string }
+        note: { type: string, nullable: true }
+      required: [status]
+    CreateSlaPolicyRequest:
+      type: object
+      properties:
+        categoryId: { type: integer, format: int64 }
+        priority: { type: string }
+        responseTimeHours: { type: integer }
+        resolutionTimeHours: { type: integer }
+        escalationThresholdPct: { type: integer, default: 80 }
+      required: [categoryId, priority, responseTimeHours, resolutionTimeHours]

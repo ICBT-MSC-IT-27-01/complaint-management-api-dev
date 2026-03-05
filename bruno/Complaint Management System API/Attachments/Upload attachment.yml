@@ -1,0 +1,50 @@
+info:
+  name: Upload attachment
+  type: http
+  seq: 2
+  tags:
+    - Attachments
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/complaints/:complaintId/attachments"
+  params:
+    - name: complaintId
+      value: ""
+      type: path
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value: []
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Uploaded
+    request:
+      url: "{{baseUrl}}/api/v1/complaints/:complaintId/attachments"
+      method: POST
+      params:
+        - name: complaintId
+          value: ""
+          type: path
+      body:
+        type: multipart-form
+        data:
+          - name: file
+            type: file
+            value: []
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""

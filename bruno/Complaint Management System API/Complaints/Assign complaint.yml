@@ -1,0 +1,54 @@
+info:
+  name: Assign complaint
+  type: http
+  seq: 7
+  tags:
+    - Complaints
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/complaints/:id/assign"
+  params:
+    - name: id
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "assignedToUserId": 0,
+        "note": "",
+        "dueDate": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Assigned
+    request:
+      url: "{{baseUrl}}/api/v1/complaints/:id/assign"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "assignedToUserId": 0,
+            "note": "",
+            "dueDate": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""

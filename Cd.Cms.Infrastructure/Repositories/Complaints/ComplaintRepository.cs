@@ -29,6 +29,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Complaints
             cmd.Parameters.AddWithValue("@StatusId",        (object?)req.StatusId        ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CategoryId",      (object?)req.CategoryId      ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@ChannelId",       (object?)req.ChannelId       ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Department",      (object?)req.Department      ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Priority",        (object?)req.Priority        ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@AssignedToUserId",(object?)req.AssignedToUserId?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Q",               (object?)req.Q               ?? DBNull.Value);
@@ -112,7 +113,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Complaints
             using var cmd = new SqlCommand(ComplaintSpNames.Escalate, conn) { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("@ComplaintId",      id);
             cmd.Parameters.AddWithValue("@Reason",           req.Reason);
-            cmd.Parameters.AddWithValue("@EscalatedToUserId",req.EscalatedToUserId);
+            cmd.Parameters.AddWithValue("@EscalatedToUserId",(object?)req.EscalatedToUserId ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@EscalationType",   req.EscalationType);
             cmd.Parameters.AddWithValue("@ActorUserId",      actorUserId);
             await conn.OpenAsync();

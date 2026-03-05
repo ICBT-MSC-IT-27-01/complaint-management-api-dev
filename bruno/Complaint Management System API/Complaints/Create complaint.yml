@@ -1,0 +1,60 @@
+info:
+  name: Create complaint
+  type: http
+  seq: 2
+  tags:
+    - Complaints
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/complaints"
+  body:
+    type: json
+    data: |-
+      {
+        "clientId": 0,
+        "clientName": "",
+        "clientEmail": "",
+        "clientMobile": "",
+        "complaintChannelId": 0,
+        "complaintCategoryId": 0,
+        "subCategoryId": 0,
+        "subject": "",
+        "description": "",
+        "priority": "Medium"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/api/v1/complaints"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "clientId": 0,
+            "clientName": "",
+            "clientEmail": "",
+            "clientMobile": "",
+            "complaintChannelId": 0,
+            "complaintCategoryId": 0,
+            "subCategoryId": 0,
+            "subject": "",
+            "description": "",
+            "priority": "Medium"
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""

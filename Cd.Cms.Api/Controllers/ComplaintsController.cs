@@ -3,6 +3,7 @@ using Cd.Cms.Application.DTOs.Complaints;
 using Cd.Cms.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace Cd.Cms.Api.Controllers
 {
@@ -17,8 +18,12 @@ namespace Cd.Cms.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] ComplaintSearchRequest req)
         {
-            var result = await _svc.SearchAsync(req ?? new());
-            return Ok(ApiResponse<object>.Success("Complaints loaded.", result));
+            try
+            {
+                var result = await _svc.SearchAsync(req ?? new());
+                return Ok(ApiResponse<object>.Success("Complaints loaded.", result));
+            }
+            catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
         }
 
         [HttpGet("{id:long}")]
@@ -100,6 +105,40 @@ namespace Cd.Cms.Api.Controllers
             catch (Exception ex) { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
         }
 
+        [HttpGet("{id:long}/sla-timer")]
+        public async Task<IActionResult> GetSlaTimer(long id)
+        {
+            var complaint = await _svc.GetByIdAsync(id);
+            if (complaint == null) return NotFound(ApiResponse<object>.NotFound());
+
+            var now = DateTime.UtcNow;
+            var isOverdue = complaint.DueDate.HasValue && complaint.DueDate.Value <= now;
+            var dto = new SlaTimerDto
+            {
+                DueDate = complaint.DueDate,
+                Remaining = complaint.DueDate.HasValue ? complaint.DueDate.Value - now : null,
+                IsOverdue = isOverdue || complaint.IsSlaBreached,
+                Status = isOverdue || complaint.IsSlaBreached ? "Overdue" : "WithinSLA"
+            };
+
+            return Ok(ApiResponse<object>.Success("SLA timer loaded.", dto));
+        }
+
+        [HttpGet("export/csv")]
+        public async Task<IActionResult> ExportCsv([FromQuery] ComplaintSearchRequest req)
+        {
+            var result = await _svc.SearchAsync(req ?? new());
+            var sb = new StringBuilder();
+            sb.AppendLine("Id,ComplaintNumber,Subject,Priority,Status,Category,ClientName,AssignedToName,SlaStatus,DueDate,CreatedDateTime");
+            foreach (var c in result.Items)
+            {
+                sb.AppendLine($"{c.Id},{c.ComplaintNumber},\"{Escape(c.Subject)}\",{c.Priority},{c.Status},\"{Escape(c.Category)}\",\"{Escape(c.ClientName)}\",\"{Escape(c.AssignedToName)}\",{c.SlaStatus},{c.DueDate:O},{c.CreatedDateTime:O}");
+            }
+
+            return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", $"complaints-{DateTime.UtcNow:yyyyMMddHHmmss}.csv");
+        }
+
         private long GetActorUserId() => long.Parse(User.FindFirst("uid")?.Value ?? "0");
+        private static string Escape(string value) => value.Replace("\"", "\"\"");
     }
 }

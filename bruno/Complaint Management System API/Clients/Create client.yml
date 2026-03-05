@@ -1,0 +1,52 @@
+info:
+  name: Create client
+  type: http
+  seq: 2
+  tags:
+    - Clients
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/clients"
+  body:
+    type: json
+    data: |-
+      {
+        "companyName": "",
+        "primaryEmail": "",
+        "primaryPhone": "",
+        "address": "",
+        "clientType": "Standard",
+        "accountManagerId": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/api/v1/clients"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "companyName": "",
+            "primaryEmail": "",
+            "primaryPhone": "",
+            "address": "",
+            "clientType": "Standard",
+            "accountManagerId": 0
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""
