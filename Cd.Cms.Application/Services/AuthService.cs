@@ -45,7 +45,8 @@ namespace Cd.Cms.Application.Services
             if (string.IsNullOrWhiteSpace(request.Password))
                 throw new ArgumentException("Password is required.");
 
-            var user = await _users.GetAuthUserByEmailOrUsernameAsync(request.EmailOrUsername)
+            var emailOrUsername = request.EmailOrUsername.Trim();
+            var user = await _users.GetAuthUserByEmailOrUsernameAsync(emailOrUsername)
                 ?? throw new UnauthorizedAccessException("Invalid credentials.");
 
             if (!user.IsActive)

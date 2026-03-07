@@ -40,3 +40,9 @@ C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Shared\obj\Debug\net8.0\Cd.Cms.S
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Shared\obj\Debug\net8.0\refint\Cd.Cms.Shared.dll
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Shared\obj\Debug\net8.0\Cd.Cms.Shared.pdb
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Shared\obj\Debug\net8.0\ref\Cd.Cms.Shared.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Shared.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Shared.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Shared.pdb
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Shared.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Shared.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Shared.pdb

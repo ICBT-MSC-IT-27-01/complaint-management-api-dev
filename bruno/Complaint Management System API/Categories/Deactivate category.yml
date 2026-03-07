@@ -1,7 +1,7 @@
 info:
   name: Deactivate category
   type: http
-  seq: 5
+  seq: 7
   tags:
     - Categories
 

@@ -21,11 +21,31 @@ namespace Cd.Cms.Api.Controllers
             return Ok(ApiResponse<object>.Success("Categories loaded.", result));
         }
 
+        [HttpGet("parents")]
+        public async Task<IActionResult> GetParents()
+        {
+            var result = await _svc.GetParentsAsync();
+            return Ok(ApiResponse<object>.Success("Parent categories loaded.", result));
+        }
+
         [HttpGet("{id:long}")]
         public async Task<IActionResult> GetById(long id)
         {
             var result = await _svc.GetByIdAsync(id);
             return result == null ? NotFound(ApiResponse<object>.NotFound()) : Ok(ApiResponse<object>.Success("Category loaded.", result));
+        }
+
+        [HttpPost("parents")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateParent([FromBody] CreateParentCategoryRequest dto)
+        {
+            try
+            {
+                var result = await _svc.CreateParentAsync(dto, GetActorUserId());
+                return StatusCode(201, ApiResponse<object>.Success("Parent category created.", result));
+            }
+            catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
+            catch (Exception ex) { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
         }
 
         [HttpPost]
@@ -46,6 +66,7 @@ namespace Cd.Cms.Api.Controllers
         public async Task<IActionResult> Update(long id, [FromBody] CreateCategoryRequest dto)
         {
             try { await _svc.UpdateAsync(id, dto, GetActorUserId()); return Ok(ApiResponse<object>.Success("Category updated.")); }
+            catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
             catch (Exception ex) { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
         }
 

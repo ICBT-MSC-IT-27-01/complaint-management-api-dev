@@ -61,3 +61,9 @@ C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Infrastructure\obj\Debug\net8.0\
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Infrastructure\obj\Debug\net8.0\refint\Cd.Cms.Infrastructure.dll
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Infrastructure\obj\Debug\net8.0\Cd.Cms.Infrastructure.pdb
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Infrastructure\obj\Debug\net8.0\ref\Cd.Cms.Infrastructure.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Infrastructure.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Infrastructure.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Infrastructure.pdb
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Infrastructure.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Infrastructure.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Infrastructure.pdb

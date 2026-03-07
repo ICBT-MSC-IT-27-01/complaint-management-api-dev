@@ -12,6 +12,21 @@ namespace Cd.Cms.Infrastructure.Repositories.Categories
         private readonly IDbFactory _db;
         public CategoryRepository(IDbFactory db) => _db = db;
 
+        public async Task<List<CategoryDto>> GetParentsAsync()
+        {
+            using var conn = (SqlConnection)_db.CreateConnection();
+            using var cmd = new SqlCommand(CategorySpNames.GetParents, conn) { CommandType = CommandType.StoredProcedure };
+            await conn.OpenAsync();
+            using var r = await cmd.ExecuteReaderAsync();
+            var parents = new List<CategoryDto>();
+            while (await r.ReadAsync())
+            {
+                parents.Add(MapFlat(r));
+            }
+
+            return parents;
+        }
+
         public async Task<List<CategoryDto>> GetAllAsync()
         {
             using var conn = (SqlConnection)_db.CreateConnection();
@@ -20,16 +35,7 @@ namespace Cd.Cms.Infrastructure.Repositories.Categories
             using var r = await cmd.ExecuteReaderAsync();
             var all = new List<CategoryDto>();
             while (await r.ReadAsync()) all.Add(MapFlat(r));
-            // Build tree
-            var lookup = all.ToDictionary(x => x.Id);
-            var roots = new List<CategoryDto>();
-            foreach (var cat in all)
-            {
-                if (cat.ParentCategoryId.HasValue && lookup.TryGetValue(cat.ParentCategoryId.Value, out var parent))
-                    parent.Children.Add(cat);
-                else roots.Add(cat);
-            }
-            return roots;
+            return all;
         }
 
         public async Task<CategoryDto?> GetByIdAsync(long id)
@@ -40,6 +46,19 @@ namespace Cd.Cms.Infrastructure.Repositories.Categories
             await conn.OpenAsync();
             using var r = await cmd.ExecuteReaderAsync();
             return await r.ReadAsync() ? MapFlat(r) : null;
+        }
+
+        public async Task<CategoryDto> CreateParentAsync(CreateParentCategoryRequest req, long actorUserId)
+        {
+            using var conn = (SqlConnection)_db.CreateConnection();
+            using var cmd = new SqlCommand(CategorySpNames.CreateParent, conn) { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("@Name", req.Name);
+            cmd.Parameters.AddWithValue("@SortOrder", req.SortOrder);
+            cmd.Parameters.AddWithValue("@ActorUserId", actorUserId);
+            await conn.OpenAsync();
+            using var r = await cmd.ExecuteReaderAsync();
+            if (await r.ReadAsync()) return MapFlat(r);
+            throw new InvalidOperationException("Parent category creation failed.");
         }
 
         public async Task<CategoryDto> CreateAsync(CreateCategoryRequest req, long actorUserId)

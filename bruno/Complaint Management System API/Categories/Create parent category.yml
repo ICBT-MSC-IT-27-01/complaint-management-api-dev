@@ -1,0 +1,44 @@
+info:
+  name: Create parent category
+  type: http
+  seq: 3
+  tags:
+    - Categories
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/categories/parents"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "",
+        "sortOrder": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/api/v1/categories/parents"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "sortOrder": 0
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""

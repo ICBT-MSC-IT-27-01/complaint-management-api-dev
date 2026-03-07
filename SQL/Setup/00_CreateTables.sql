@@ -40,11 +40,10 @@ CREATE TABLE Clients (
     UpdatedBy        BIGINT        NULL
 );
 
--- Categories
-CREATE TABLE Categories (
+-- ParentCategories
+CREATE TABLE ParentCategories (
     Id               BIGINT        IDENTITY(1,1) PRIMARY KEY,
-    Name             NVARCHAR(150) NOT NULL,
-    ParentCategoryId BIGINT        NULL REFERENCES Categories(Id),
+    Name             NVARCHAR(150) NOT NULL UNIQUE,
     SortOrder        INT           NOT NULL DEFAULT 0,
     IsActive         BIT           NOT NULL DEFAULT 1,
     CreatedDateTime  DATETIME2     NOT NULL DEFAULT GETUTCDATE(),
@@ -52,6 +51,20 @@ CREATE TABLE Categories (
     UpdatedDateTime  DATETIME2     NULL,
     UpdatedBy        BIGINT        NULL
 );
+
+-- Categories
+CREATE TABLE Categories (
+    Id               BIGINT        IDENTITY(1,1) PRIMARY KEY,
+    Name             NVARCHAR(150) NOT NULL,
+    ParentCategoryId BIGINT        NOT NULL REFERENCES ParentCategories(Id),
+    SortOrder        INT           NOT NULL DEFAULT 0,
+    IsActive         BIT           NOT NULL DEFAULT 1,
+    CreatedDateTime  DATETIME2     NOT NULL DEFAULT GETUTCDATE(),
+    CreatedBy        BIGINT        NOT NULL DEFAULT 0,
+    UpdatedDateTime  DATETIME2     NULL,
+    UpdatedBy        BIGINT        NULL
+);
+CREATE UNIQUE INDEX UX_Categories_Parent_Name ON Categories(ParentCategoryId, Name);
 
 -- Departments
 CREATE TABLE Departments (

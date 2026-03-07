@@ -1,0 +1,46 @@
+info:
+  name: Create department
+  type: http
+  seq: 2
+  tags:
+    - Departments
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/departments"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "",
+        "description": "",
+        "sortOrder": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/api/v1/departments"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "description": "",
+            "sortOrder": 0
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""

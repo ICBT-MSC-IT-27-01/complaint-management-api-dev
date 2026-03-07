@@ -1,7 +1,7 @@
 info:
   name: Update category
   type: http
-  seq: 4
+  seq: 6
   tags:
     - Categories
 
@@ -17,7 +17,7 @@ http:
     data: |-
       {
         "name": "",
-        "parentCategoryId": 0,
+        "parentCategoryId": 1,
         "sortOrder": 0
       }
   auth: inherit
@@ -43,7 +43,7 @@ examples:
         data: |-
           {
             "name": "",
-            "parentCategoryId": 0,
+            "parentCategoryId": 1,
             "sortOrder": 0
           }
     response:

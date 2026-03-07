@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cd.Cms.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e197dca019cbcfc41fe37669ba199ba023917d5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63d513da22c3c5ee49df4948001c84786483d357")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cd.Cms.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cd.Cms.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

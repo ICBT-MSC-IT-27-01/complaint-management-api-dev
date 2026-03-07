@@ -55,3 +55,9 @@ C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Application\obj\Debug\net8.0\Cd.
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Application\obj\Debug\net8.0\refint\Cd.Cms.Application.dll
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Application\obj\Debug\net8.0\Cd.Cms.Application.pdb
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Application\obj\Debug\net8.0\ref\Cd.Cms.Application.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Application.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Application.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parent-category\Cd.Cms.Application.pdb
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Application.deps.json
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Application.dll
+C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-parentcategories-v2\Cd.Cms.Application.pdb

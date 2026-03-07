@@ -259,6 +259,26 @@ paths:
       responses:
         '201': { description: Created }
 
+  /api/v1/categories/parents:
+    get:
+      tags: [Categories]
+      summary: Get parent categories
+      operationId: getParentCategories
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Categories]
+      summary: Create parent category
+      operationId: createParentCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParentCategoryRequest'
+      responses:
+        '201': { description: Created }
+
   /api/v1/categories/{id}:
     get:
       tags: [Categories]
@@ -718,7 +738,13 @@ components:
       type: object
       properties:
         name: { type: string }
-        parentCategoryId: { type: integer, format: int64, nullable: true }
+        parentCategoryId: { type: integer, format: int64 }
+        sortOrder: { type: integer, default: 0 }
+      required: [name, parentCategoryId]
+    CreateParentCategoryRequest:
+      type: object
+      properties:
+        name: { type: string }
         sortOrder: { type: integer, default: 0 }
       required: [name]
     CreateComplaintRequest:

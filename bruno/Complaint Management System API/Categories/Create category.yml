@@ -1,7 +1,7 @@
 info:
   name: Create category
   type: http
-  seq: 2
+  seq: 4
   tags:
     - Categories
 
@@ -13,7 +13,7 @@ http:
     data: |-
       {
         "name": "",
-        "parentCategoryId": 0,
+        "parentCategoryId": 1,
         "sortOrder": 0
       }
   auth: inherit
@@ -35,7 +35,7 @@ examples:
         data: |-
           {
             "name": "",
-            "parentCategoryId": 0,
+            "parentCategoryId": 1,
             "sortOrder": 0
           }
     response:
