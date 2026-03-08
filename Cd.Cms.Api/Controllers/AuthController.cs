@@ -25,7 +25,7 @@ namespace Cd.Cms.Api.Controllers
                     return Ok(ApiResponse<object>.Success("Email check completed.", check));
                 }
 
-                var result = await _auth.LoginAsync(dto, ct);
+                var result = await _auth.LoginAsync(dto, GetClientIpAddress(), GetUserAgent(), ct);
                 return Ok(ApiResponse<object>.Success("Login successful.", result));
             }
             catch (ArgumentException ex)          { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
@@ -40,7 +40,7 @@ namespace Cd.Cms.Api.Controllers
             try
             {
                 if (dto == null) return BadRequest(ApiResponse<object>.ValidationError("Request body is required."));
-                var result = await _auth.RegisterClientAsync(dto, ct);
+                var result = await _auth.RegisterClientAsync(dto, GetClientIpAddress(), GetUserAgent(), ct);
                 return StatusCode(201, ApiResponse<object>.Success("Client account created.", result));
             }
             catch (ArgumentException ex)          { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
@@ -73,6 +73,21 @@ namespace Cd.Cms.Api.Controllers
             catch (ArgumentException ex) { return BadRequest(ApiResponse<object>.ValidationError(ex.Message)); }
             catch (InvalidOperationException ex) { return BadRequest(ApiResponse<object>.Error(ex.Message, ResponseCodes.BAD_REQUEST)); }
             catch (Exception ex)         { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
+        }
+
+        private string GetClientIpAddress()
+        {
+            var forwarded = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(forwarded))
+                return forwarded.Split(',')[0].Trim();
+
+            return HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown-ip";
+        }
+
+        private string GetUserAgent()
+        {
+            var userAgent = Request.Headers.UserAgent.ToString();
+            return string.IsNullOrWhiteSpace(userAgent) ? "Unknown Device" : userAgent;
         }
     }
 }

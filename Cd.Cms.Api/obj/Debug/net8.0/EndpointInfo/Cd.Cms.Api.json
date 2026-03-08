@@ -1803,6 +1803,18 @@
         }
       }
     },
+    "/api/v1/role-permissions/roles": {
+      "get": {
+        "tags": [
+          "RolePermissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/role-permissions/{role}": {
       "get": {
         "tags": [
@@ -1890,6 +1902,24 @@
       "get": {
         "tags": [
           "RolePermissions"
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -2953,17 +2983,18 @@
       "RolePermissionDto": {
         "type": "object",
         "properties": {
-          "role": {
-            "type": "string",
-            "nullable": true
-          },
           "module": {
             "type": "string",
             "nullable": true
           },
-          "permissionLevel": {
-            "type": "string",
-            "nullable": true
+          "canRead": {
+            "type": "boolean"
+          },
+          "canWrite": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

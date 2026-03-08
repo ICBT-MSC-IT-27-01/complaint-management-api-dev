@@ -4,6 +4,8 @@ namespace Cd.Cms.Application.DTOs.Users
     {
         public string SessionId { get; set; } = string.Empty;
         public string DeviceId { get; set; } = string.Empty;
+        public string Device { get; set; } = string.Empty;
+        public string IpAddress { get; set; } = string.Empty;
         public DateTime IssuedAtUtc { get; set; }
         public DateTime LastSeenAtUtc { get; set; }
         public DateTime ExpiresAtUtc { get; set; }

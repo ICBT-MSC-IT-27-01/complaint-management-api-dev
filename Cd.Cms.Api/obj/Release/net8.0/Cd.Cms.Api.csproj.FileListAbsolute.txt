@@ -79,4 +79,3 @@ C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Release\net8.0\refint\Cd
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Release\net8.0\Cd.Cms.Api.pdb
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Release\net8.0\Cd.Cms.Api.genruntimeconfig.cache
 C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Release\net8.0\ref\Cd.Cms.Api.dll
-C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Release\net8.0\staticwebassets.upToDateCheck.txt

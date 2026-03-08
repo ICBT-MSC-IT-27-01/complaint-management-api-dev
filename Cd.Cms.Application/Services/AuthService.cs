@@ -36,7 +36,7 @@ namespace Cd.Cms.Application.Services
             _jwt = jwtOptions.Value;
         }
 
-        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request, CancellationToken ct = default)
+        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request, string? clientIp = null, string? userAgent = null, CancellationToken ct = default)
         {
             if (request == null)
                 throw new ArgumentException("Request body is required.");
@@ -74,7 +74,7 @@ namespace Cd.Cms.Application.Services
                     throw new UnauthorizedAccessException("Invalid two-factor code.");
             }
 
-            var session = CreateSession(user.Id, request.DeviceId);
+            var session = CreateSession(user.Id, request.DeviceId, clientIp, userAgent);
             return GenerateAuthResponse(user, session.SessionId);
         }
 
@@ -96,7 +96,7 @@ namespace Cd.Cms.Application.Services
             };
         }
 
-        public async Task<AuthResponseDto> RegisterClientAsync(ClientRegisterRequestDto request, CancellationToken ct = default)
+        public async Task<AuthResponseDto> RegisterClientAsync(ClientRegisterRequestDto request, string? clientIp = null, string? userAgent = null, CancellationToken ct = default)
         {
             if (request == null)
                 throw new ArgumentException("Request body is required.");
@@ -139,7 +139,7 @@ namespace Cd.Cms.Application.Services
                 throw new InvalidOperationException("Email is already registered.");
             }
 
-            var session = CreateSession(created.Id, "client-registration");
+            var session = CreateSession(created.Id, "client-registration", clientIp, userAgent);
             return GenerateAuthResponse(new AuthUserDto
             {
                 Id = created.Id,
@@ -264,6 +264,8 @@ namespace Cd.Cms.Application.Services
                 {
                     SessionId = s.SessionId,
                     DeviceId = s.DeviceId,
+                    Device = s.Device,
+                    IpAddress = s.IpAddress,
                     IssuedAtUtc = s.IssuedAtUtc,
                     LastSeenAtUtc = s.LastSeenAtUtc,
                     ExpiresAtUtc = s.ExpiresAtUtc,
@@ -368,20 +370,36 @@ namespace Cd.Cms.Application.Services
             return string.Equals(BuildTwoFactorCode(state.Secret), code, StringComparison.Ordinal);
         }
 
-        private SessionState CreateSession(long userId, string? deviceId)
+        private SessionState CreateSession(long userId, string? deviceId, string? clientIp, string? userAgent)
         {
             var now = DateTime.UtcNow;
+            var normalizedDeviceId = string.IsNullOrWhiteSpace(deviceId) ? "unknown-device" : deviceId.Trim();
             var session = new SessionState
             {
                 SessionId = Guid.NewGuid().ToString("N"),
                 UserId = userId,
-                DeviceId = string.IsNullOrWhiteSpace(deviceId) ? "unknown-device" : deviceId.Trim(),
+                DeviceId = normalizedDeviceId,
+                Device = BuildDeviceLabel(normalizedDeviceId, userAgent),
+                IpAddress = string.IsNullOrWhiteSpace(clientIp) ? "unknown-ip" : clientIp.Trim(),
                 IssuedAtUtc = now,
                 LastSeenAtUtc = now,
                 ExpiresAtUtc = now.AddMinutes(Math.Max(_jwt.AccessTokenMinutes, 30))
             };
             Sessions[session.SessionId] = session;
             return session;
+        }
+
+        private static string BuildDeviceLabel(string deviceId, string? userAgent)
+        {
+            if (!string.IsNullOrWhiteSpace(deviceId) && !string.Equals(deviceId, "unknown-device", StringComparison.OrdinalIgnoreCase))
+                return deviceId;
+
+            if (string.IsNullOrWhiteSpace(userAgent))
+                return "Unknown Device";
+
+            var ua = userAgent.Trim();
+            if (ua.Length > 120) ua = ua[..120];
+            return ua;
         }
 
         private async Task<string> GenerateUniqueClientUsernameAsync(string email)
@@ -466,6 +484,8 @@ namespace Cd.Cms.Application.Services
             public string SessionId { get; set; } = string.Empty;
             public long UserId { get; set; }
             public string DeviceId { get; set; } = string.Empty;
+            public string Device { get; set; } = string.Empty;
+            public string IpAddress { get; set; } = string.Empty;
             public DateTime IssuedAtUtc { get; set; }
             public DateTime LastSeenAtUtc { get; set; }
             public DateTime ExpiresAtUtc { get; set; }

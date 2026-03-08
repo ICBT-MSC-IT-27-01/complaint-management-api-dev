@@ -27,6 +27,36 @@ namespace Cd.Cms.Api.Controllers
             return Ok(ApiResponse<object>.Success("Sessions loaded.", result));
         }
 
+        [HttpGet("sessions/device-ip")]
+        public async Task<IActionResult> GetSessionDeviceIp(CancellationToken ct)
+        {
+            var sessions = await _auth.GetSessionsAsync(GetActorUserId(), ct);
+            var result = sessions.Select(s => new
+            {
+                s.SessionId,
+                Device = string.IsNullOrWhiteSpace(s.Device) ? s.DeviceId : s.Device,
+                IP = s.IpAddress,
+                LastActive = s.LastSeenAtUtc,
+                s.IsActive
+            });
+            return Ok(ApiResponse<object>.Success("Session device and IP loaded.", result));
+        }
+
+        [HttpGet("device")]
+        public IActionResult GetCurrentDevice()
+        {
+            var userAgent = Request.Headers.UserAgent.ToString();
+            var device = string.IsNullOrWhiteSpace(userAgent) ? "Unknown Device" : userAgent;
+            return Ok(ApiResponse<object>.Success("Current device loaded.", new { Device = device }));
+        }
+
+        [HttpGet("ip")]
+        public IActionResult GetCurrentIp()
+        {
+            var ip = GetClientIpAddress();
+            return Ok(ApiResponse<object>.Success("Current IP loaded.", new { IP = ip }));
+        }
+
         [HttpDelete("sessions/{sessionId}")]
         public async Task<IActionResult> RevokeSession(string sessionId, CancellationToken ct)
         {
@@ -72,6 +102,15 @@ namespace Cd.Cms.Api.Controllers
                 return Ok(ApiResponse<object>.Success("Account deactivated."));
             }
             catch (Exception ex) { return StatusCode(500, ApiResponse<object>.Error(ex.Message)); }
+        }
+
+        private string GetClientIpAddress()
+        {
+            var forwarded = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(forwarded))
+                return forwarded.Split(',')[0].Trim();
+
+            return HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown-ip";
         }
 
         private long GetActorUserId() => long.Parse(User.FindFirst("uid")?.Value ?? "0");
