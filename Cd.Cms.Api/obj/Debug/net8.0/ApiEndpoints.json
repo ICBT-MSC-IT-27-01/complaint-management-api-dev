@@ -37,6 +37,26 @@
   },
   {
     "ContainingType": "Cd.Cms.Api.Controllers.AccountController",
+    "Method": "GetCurrentDevice",
+    "RelativePath": "api/v1/account/device",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Cd.Cms.Api.Controllers.AccountController",
+    "Method": "GetCurrentIp",
+    "RelativePath": "api/v1/account/ip",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Cd.Cms.Api.Controllers.AccountController",
     "Method": "GetSessions",
     "RelativePath": "api/v1/account/sessions",
     "HttpMethod": "GET",
@@ -59,6 +79,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Cd.Cms.Api.Controllers.AccountController",
+    "Method": "GetSessionDeviceIp",
+    "RelativePath": "api/v1/account/sessions/device-ip",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
