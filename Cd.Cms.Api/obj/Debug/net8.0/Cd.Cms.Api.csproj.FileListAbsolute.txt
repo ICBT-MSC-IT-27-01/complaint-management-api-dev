@@ -274,4 +274,3 @@ C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-dashboard-userwise
 C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-dashboard-userwise\Cd.Cms.Api.runtimeconfig.json
 C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-dashboard-userwise\Cd.Cms.Api.dll
 C:\CMS\ICBT\complaint-management-api-dev\artifacts\verify-api-dashboard-userwise\Cd.Cms.Api.pdb
-C:\CMS\ICBT\complaint-management-api-dev\Cd.Cms.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

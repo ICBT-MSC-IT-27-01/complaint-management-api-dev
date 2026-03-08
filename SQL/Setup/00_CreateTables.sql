@@ -80,6 +80,28 @@ CREATE TABLE Departments (
     UpdatedBy        BIGINT        NULL
 );
 
+-- Teams
+CREATE TABLE Teams (
+    Id               BIGINT         IDENTITY(1,1) PRIMARY KEY,
+    TeamCode         NVARCHAR(20)   NOT NULL UNIQUE,
+    TeamName         NVARCHAR(150)  NOT NULL UNIQUE,
+    LeadUserId       BIGINT         NULL REFERENCES Users(Id),
+    IsActive         BIT            NOT NULL DEFAULT 1,
+    CreatedDateTime  DATETIME2      NOT NULL DEFAULT GETUTCDATE(),
+    CreatedBy        BIGINT         NOT NULL DEFAULT 0,
+    UpdatedDateTime  DATETIME2      NULL,
+    UpdatedBy        BIGINT         NULL
+);
+
+CREATE TABLE TeamMembers (
+    TeamId           BIGINT        NOT NULL REFERENCES Teams(Id),
+    UserId           BIGINT        NOT NULL REFERENCES Users(Id),
+    CreatedDateTime  DATETIME2     NOT NULL DEFAULT GETUTCDATE(),
+    CreatedBy        BIGINT        NOT NULL DEFAULT 0,
+    PRIMARY KEY (TeamId, UserId),
+    CONSTRAINT UX_TeamMembers_User UNIQUE (UserId)
+);
+
 -- SLA Policies
 CREATE TABLE SLAPolicies (
     Id                     BIGINT        IDENTITY(1,1) PRIMARY KEY,
