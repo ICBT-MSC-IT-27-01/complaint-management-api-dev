@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cd.Cms.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e197dca019cbcfc41fe37669ba199ba023917d5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7be173a316103373d9464b6324d7eebd7ad0714e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cd.Cms.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cd.Cms.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
